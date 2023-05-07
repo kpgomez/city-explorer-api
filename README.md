@@ -2,7 +2,7 @@
 
 # Project Name
 
-**Author**: Your Name Goes Here
+**Author**: KP Gomez
 **Version**: 1.0.0 (increment the patch/fix version number if you make more commits past your first submission)
 
 ## Overview
@@ -36,3 +36,18 @@ Actual time needed to complete: 30 minutes
 
 <hr>
 
+Name of feature: Weather(placeholder)
+
+Estimate of time needed to complete: 30 minutes
+
+Start time: 8:15 p.m.
+
+Finish time: to be cont'd
+
+Actual time needed to complete: 5+ hours so far
+
+<hr>
+
+## Dataflow
+
+![dataflow](Screenshot%202023-05-07%20at%201.22.40%20AM.png)
