@@ -28,12 +28,12 @@ app.get('/', (request, response) => {
 
 //second route to read the static data
 //for netlify as our front-end, replace localhost:3001 with http://render-app-name/weatherData (render is our host)
-app.get('/weather', (request, response) => {
+app.get('/weather', (request, response, next) => {
     // console.log(lat, lon, searchQuery);
     //destructuring lns 34-39 represent a more dynamic request/response
     // const {lat, lon, searchQuery} = request.query;
     // // // const searchQuery = request.query.searchQuery; same as above
-    
+
     // const cityData = weatherData.find(data => data.city_name === searchQuery);
     // // console.log(cityData);
     // response.status(200).send(cityData);
@@ -62,18 +62,22 @@ app.get('/weather', (request, response) => {
     // response.status(200).send(weatherData);
 
     // ln 65-74 represent static request/responses
-    const {lat,lon,searchQuery} = request.query;
-    if(searchQuery === 'Seattle'){
-        const formattedData = weatherData[0].data.map(obj => new Forecast(obj));
-        response.status(200).send(formattedData);
-    } 
-    if(searchQuery === 'Paris'){
-        const formattedData = weatherData[1].data.map(obj => new Forecast(obj));
-        response.status(200).send(formattedData);
-    }
-    if(searchQuery === 'Amman'){
-        const formattedData = weatherData[2].data.map(obj => new Forecast(obj));
-        response.status(200).send(formattedData);
+    try {
+        const { lat, lon, searchQuery } = request.query;
+        if (searchQuery === 'Seattle') {
+            const formattedData = weatherData[0].data.map(obj => new Forecast(obj));
+            response.status(200).send(formattedData);
+        } else if (searchQuery === 'Paris') {
+            const formattedData = weatherData[1].data.map(obj => new Forecast(obj));
+            response.status(200).send(formattedData);
+        } else if (searchQuery === 'Amman') {
+            const formattedData = weatherData[2].data.map(obj => new Forecast(obj));
+            response.status(200).send(formattedData);
+        } else {
+            response.status(404).send('City not found');
+        }
+    } catch (error) {
+        next(error);
     }
 })
 
@@ -84,6 +88,16 @@ class Forecast {
         this.description = obj.weather.description;
     }
 }
+
+//catch-all route
+app.get('*', (request, response) => {
+    response.status(404).send('Not found');
+})
+
+//middleware for error-handling
+app.use((error, request, response, next) => {
+    response.status(500).send(error.message);
+})
 
 //tells the app which port to listen on
 app.listen(port, () => console.log(`listening on ${port}`));
