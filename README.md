@@ -48,6 +48,18 @@ Actual time needed to complete: 5+ hours so far
 
 <hr>
 
+Name of feature: Weather(live)
+
+Estimate of time needed to complete: 6 hours
+
+Start time: 12 a.m.
+
+Finish time: to be cont'd
+
+Actual time needed to complete: 
+
+<hr>
+
 ## Dataflow
 
 ![dataflow](Screenshot%202023-05-07%20at%201.22.40%20AM.png)
