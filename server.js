@@ -35,13 +35,13 @@ app.get('/search', getLocation);
 async function getLocation(req, res, next){
     try {
         const {searchQuery} = req.query;
-        console.log(searchQuery);
+        // console.log(searchQuery);
         const url = `https://us1.locationiq.com/v1/search.php?key=${process.env.LOCATIONIQ_KEY}&q=${searchQuery}&format=json`;
-        console.log(url);
+        // console.log(url);
         let config = { headers: {Referer: process.env.SERVER_URL}};
-        console.log(config);
+        // console.log(config);
         const locationResponse = await axios.get(url, config);
-        res.send(locationResponse.data);
+        res.send(locationResponse.data); // need to send lat/lon to weather and searchQuery to movies 
         // console.log(locationResponse.data[0]);
         // const formattedLocationResponse = locationResponse.data[0];
         // console.log(this.state.city);
@@ -55,70 +55,73 @@ async function getLocation(req, res, next){
     }
 }
 
-//second route to read the static data
-//for netlify as our front-end, replace localhost:3001 with http://render-app-name/weatherData (render is our host)
-app.get('/weather', (request, response, next) => {
-    // console.log(lat, lon, searchQuery);
-    //destructuring lns 34-39 represent a more dynamic request/response
-    // const {lat, lon, searchQuery} = request.query;
-    // // // const searchQuery = request.query.searchQuery; same as above
+// //second route to read the static data
+// //for netlify as our front-end, replace localhost:3001 with http://render-app-name/weatherData (render is our host)
+// app.get('/weather', (request, response, next) => {
+//     // console.log(lat, lon, searchQuery);
+//     //destructuring lns 34-39 represent a more dynamic request/response
+//     // const {lat, lon, searchQuery} = request.query;
+//     // // // const searchQuery = request.query.searchQuery; same as above
 
-    // const cityData = weatherData.find(data => data.city_name === searchQuery);
-    // // console.log(cityData);
-    // response.status(200).send(cityData);
+//     // const cityData = weatherData.find(data => data.city_name === searchQuery);
+//     // // console.log(cityData);
+//     // response.status(200).send(cityData);
 
-    // const latData = weatherData.find(data => data.lat === lat);
-    // console.log(latData);
-    // response.status(200).send(latData);
+//     // const latData = weatherData.find(data => data.lat === lat);
+//     // console.log(latData);
+//     // response.status(200).send(latData);
 
-    // const lonData = weatherData.find(data => data.lon === lon);
-    // response.status(200).send(lonData);
+//     // const lonData = weatherData.find(data => data.lon === lon);
+//     // response.status(200).send(lonData);
 
-    // const latData = weatherData.find(lattitude => )
-    // if(searchQuery === 'Seattle'){
-    //     response.status(200).send(weatherData[0].city_name)
-    // }
-    // } else if(searchQuery === 'Paris') {
-    //     response.status(200).send(weatherData[0].city_name)
-    // } else if(searchQuery === 'Amman'){
-    //     response.status(200).send(weatherData[0].city_name)
-    // } else {
-    //     response.status(404).send('We do not have that data')
-    // }
-    // console.log(request.query); //grabs request object, and reaching into object and retrieving values within query property
+//     // const latData = weatherData.find(lattitude => )
+//     // if(searchQuery === 'Seattle'){
+//     //     response.status(200).send(weatherData[0].city_name)
+//     // }
+//     // } else if(searchQuery === 'Paris') {
+//     //     response.status(200).send(weatherData[0].city_name)
+//     // } else if(searchQuery === 'Amman'){
+//     //     response.status(200).send(weatherData[0].city_name)
+//     // } else {
+//     //     response.status(404).send('We do not have that data')
+//     // }
+//     // console.log(request.query); //grabs request object, and reaching into object and retrieving values within query property
 
 
-    // response.status(200).send(weatherData);
+//     // response.status(200).send(weatherData);
 
-    // ln 65-74 represent static request/responses
-    try {
-        const { lat, lon, searchQuery } = request.query;
-        if (searchQuery === 'Seattle') {
-            const formattedData = weatherData[0].data.map(obj => new Forecast(obj));
-            response.status(200).send(formattedData);
-        } else if (searchQuery === 'Paris') {
-            const formattedData = weatherData[1].data.map(obj => new Forecast(obj));
-            response.status(200).send(formattedData);
-        } else if (searchQuery === 'Amman') {
-            const formattedData = weatherData[2].data.map(obj => new Forecast(obj));
-            response.status(200).send(formattedData);
-        } else {
-            response.status(404).send('City not found');
-        }
-    } catch (error) {
-        next(error);
-    }
-})
+//     // ln 65-74 represent static request/responses
+//     try {
+//         const { lat, lon, searchQuery } = request.query;
+//         if (searchQuery === 'Seattle') {
+//             const formattedData = weatherData[0].data.map(obj => new Forecast(obj));
+//             response.status(200).send(formattedData);
+//         } else if (searchQuery === 'Paris') {
+//             const formattedData = weatherData[1].data.map(obj => new Forecast(obj));
+//             response.status(200).send(formattedData);
+//         } else if (searchQuery === 'Amman') {
+//             const formattedData = weatherData[2].data.map(obj => new Forecast(obj));
+//             response.status(200).send(formattedData);
+//         } else {
+//             response.status(404).send('City not found');
+//         }
+//     } catch (error) {
+//         next(error);
+//     }
+// })
 
 //route for live weather
-app.get('/liveweather', getLiveWeather);
+app.get('/weather', getLiveWeather);
 
 async function getLiveWeather(req, res, next) {
     try {
-        const { searchQuery } = req.query;
-        const url = `http://api.weatherbit.io/v2.0/forecast/daily?key=${process.env.WEATHER_API_KEY}&units=I&days=10&center=${searchQuery.lat}${searchQuery.lon}`;
+        const { lat, lon } = req.query;
+        // console.log(lat, lon);
+        const url = `http://api.weatherbit.io/v2.0/forecast/daily?key=${process.env.WEATHER_API_KEY}&lat=${lat}&lon=${lon}`;
         const weatherResponse = await axios.get(url);
-        const formattedWeatherData = weatherResponse.data.data.data.map(day => new Forecast(day));
+        console.log(weatherResponse.data.data);
+        const formattedWeatherData = weatherResponse.data.data.map(day => new Forecast(day));
+        console.log(formattedWeatherData);
         res.status(200).send(formattedWeatherData);
     }
     catch (error) {
@@ -132,8 +135,11 @@ app.get('/movies', getMovies);
 async function getMovies(req, res, next){
     try{
         const {searchQuery} = req.query;
-        const url = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.MOVIES_KEY}&query=${searchQuery.display_name}`;
+        console.log(searchQuery);
+        const url = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.MOVIE_API_KEY}&query=${searchQuery}`;
+        console.log(url);
         const moviesResponse = await axios.get(url);
+        console.log(moviesResponse.data);
         const formattedMovieData = moviesResponse.data.results.map(movie => new Movie(movie));
         res.status(200).send(formattedMovieData);
     }
