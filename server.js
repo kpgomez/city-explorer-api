@@ -9,6 +9,8 @@ const express = require('express');
 //brings in cors library and assigns to variable "cors". CORS stands for CROSS ORIGIN RESOURCE SHARING. Provides security for requests, controlls access to resources
 const cors = require('cors');
 
+const axios = require('axios');
+
 //brings in json data
 const weatherData = require('./data/weather.json');
 
@@ -26,66 +28,73 @@ app.get('/', (request, response) => {
     response.status(200).send('Hey your default route is working')
 });
 
-//second route to read the static data
-//for netlify as our front-end, replace localhost:3001 with http://render-app-name/weatherData (render is our host)
-app.get('/weather', (request, response, next) => {
-    // console.log(lat, lon, searchQuery);
-    //destructuring lns 34-39 represent a more dynamic request/response
-    // const {lat, lon, searchQuery} = request.query;
-    // // // const searchQuery = request.query.searchQuery; same as above
+//route for locationIQ
+app.get('/search', getLocation)
 
-    // const cityData = weatherData.find(data => data.city_name === searchQuery);
-    // // console.log(cityData);
-    // response.status(200).send(cityData);
-
-    // const latData = weatherData.find(data => data.lat === lat);
-    // console.log(latData);
-    // response.status(200).send(latData);
-
-    // const lonData = weatherData.find(data => data.lon === lon);
-    // response.status(200).send(lonData);
-
-    // const latData = weatherData.find(lattitude => )
-    // if(searchQuery === 'Seattle'){
-    //     response.status(200).send(weatherData[0].city_name)
-    // }
-    // } else if(searchQuery === 'Paris') {
-    //     response.status(200).send(weatherData[0].city_name)
-    // } else if(searchQuery === 'Amman'){
-    //     response.status(200).send(weatherData[0].city_name)
-    // } else {
-    //     response.status(404).send('We do not have that data')
-    // }
-    // console.log(request.query); //grabs request object, and reaching into object and retrieving values within query property
-
-
-    // response.status(200).send(weatherData);
-
-    // ln 65-74 represent static request/responses
+//because locationiq was moved to backend
+async function getLocation(req, res, next) {
     try {
-        const { lat, lon, searchQuery } = request.query;
-        if (searchQuery === 'Seattle') {
-            const formattedData = weatherData[0].data.map(obj => new Forecast(obj));
-            response.status(200).send(formattedData);
-        } else if (searchQuery === 'Paris') {
-            const formattedData = weatherData[1].data.map(obj => new Forecast(obj));
-            response.status(200).send(formattedData);
-        } else if (searchQuery === 'Amman') {
-            const formattedData = weatherData[2].data.map(obj => new Forecast(obj));
-            response.status(200).send(formattedData);
-        } else {
-            response.status(404).send('City not found');
-        }
-    } catch (error) {
+        const { searchQuery } = req.query;
+        const url = `https://us1.locationiq.com/v1/search.php?key=${process.env.LOCATIONIQ_KEY}&q=${searchQuery}&format=json`;
+        let config = { headers: { Referer: process.env.SERVER_URL } }; //got help from Roger
+        const locationResponse = await axios.get(url, config); //help from instructor
+        res.send(locationResponse.data);
+    }
+    catch (error) {
         next(error);
     }
-})
+}
+//route for live weather
+app.get('/weather', getLiveWeather);
 
-//this class is used for format the data
+async function getLiveWeather(req, res, next) {
+    try {
+        const { lat, lon } = req.query;
+        const url = `http://api.weatherbit.io/v2.0/forecast/daily?key=${process.env.WEATHER_API_KEY}&lat=${lat}&lon=${lon}`;
+        const weatherResponse = await axios.get(url);
+        const formattedWeatherData = weatherResponse.data.data.map(day => new Forecast(day));
+        res.status(200).send(formattedWeatherData);
+    }
+    catch (error) {
+        next(error)
+    }
+}
+
+//route for live movies
+app.get('/movies', getMovies);
+
+async function getMovies(req, res, next) {
+    try {
+        const { searchQuery } = req.query;
+        const url = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.MOVIE_API_KEY}&query=${searchQuery}`;
+        const moviesResponse = await axios.get(url);
+        const formattedMovieData = moviesResponse.data.results.map(movie => new Movie(movie));
+        res.status(200).send(formattedMovieData);
+    }
+    catch (error) {
+        next(error)
+    }
+}
+
+//this class is used for format the weather data
 class Forecast {
     constructor(obj) {
-        this.date = obj.valid_date;
-        this.description = obj.weather.description;
+        this.date = obj.datetime;
+        this.description = `Low of ${obj.low_temp}, high of ${obj.high_temp} with ${obj.weather.description}`;
+
+    }
+}
+
+//this class is used to format the movie data
+class Movie {
+    constructor(obj) {
+        this.title = obj.title;
+        this.overview = obj.overview;
+        this.average_votes = obj.vote_average;
+        this.total_votes = obj.vote_count;
+        this.image_url = `https://image.tmdb.org/t/p/w500${obj.poster_path}`;
+        this.popularity = obj.popularity;
+        this.released_on = obj.release_date;
     }
 }
 
