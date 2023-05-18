@@ -29,87 +29,22 @@ app.get('/', (request, response) => {
 });
 
 //route for locationIQ
-app.get('/search', getLocation);
+app.get('/search', getLocation)
 
-//because locationiq was moved to be
-async function getLocation(req, res, next){
+//because locationiq was moved to backend
+async function getLocation(req, res, next) {
     try {
-        const {searchQuery} = req.query;
+        const { searchQuery } = req.query;
         // console.log(searchQuery);
         const url = `https://us1.locationiq.com/v1/search.php?key=${process.env.LOCATIONIQ_KEY}&q=${searchQuery}&format=json`;
-        // console.log(url);
-        let config = { headers: {Referer: process.env.SERVER_URL}};
-        // console.log(config);
-        const locationResponse = await axios.get(url, config);
-        res.send(locationResponse.data); // need to send lat/lon to weather and searchQuery to movies 
-        // console.log(locationResponse.data[0]);
-        // const formattedLocationResponse = locationResponse.data[0];
-        // console.log(this.state.city);
-        // this.getMap(response.data[0].lat, response.data[0].lon);
-        // // console.log(response.data[0].lat);
-        // console.log(response.data[0].lon);
-        // response.status(200).send(formattedLocationResponse);
+        let config = { headers: { Referer: process.env.SERVER_URL } }; //got help from Roger
+        const locationResponse = await axios.get(url, config); //help from instructor
+        res.send(locationResponse.data);
     }
     catch (error) {
         next(error);
     }
 }
-
-// //second route to read the static data
-// //for netlify as our front-end, replace localhost:3001 with http://render-app-name/weatherData (render is our host)
-// app.get('/weather', (request, response, next) => {
-//     // console.log(lat, lon, searchQuery);
-//     //destructuring lns 34-39 represent a more dynamic request/response
-//     // const {lat, lon, searchQuery} = request.query;
-//     // // // const searchQuery = request.query.searchQuery; same as above
-
-//     // const cityData = weatherData.find(data => data.city_name === searchQuery);
-//     // // console.log(cityData);
-//     // response.status(200).send(cityData);
-
-//     // const latData = weatherData.find(data => data.lat === lat);
-//     // console.log(latData);
-//     // response.status(200).send(latData);
-
-//     // const lonData = weatherData.find(data => data.lon === lon);
-//     // response.status(200).send(lonData);
-
-//     // const latData = weatherData.find(lattitude => )
-//     // if(searchQuery === 'Seattle'){
-//     //     response.status(200).send(weatherData[0].city_name)
-//     // }
-//     // } else if(searchQuery === 'Paris') {
-//     //     response.status(200).send(weatherData[0].city_name)
-//     // } else if(searchQuery === 'Amman'){
-//     //     response.status(200).send(weatherData[0].city_name)
-//     // } else {
-//     //     response.status(404).send('We do not have that data')
-//     // }
-//     // console.log(request.query); //grabs request object, and reaching into object and retrieving values within query property
-
-
-//     // response.status(200).send(weatherData);
-
-//     // ln 65-74 represent static request/responses
-//     try {
-//         const { lat, lon, searchQuery } = request.query;
-//         if (searchQuery === 'Seattle') {
-//             const formattedData = weatherData[0].data.map(obj => new Forecast(obj));
-//             response.status(200).send(formattedData);
-//         } else if (searchQuery === 'Paris') {
-//             const formattedData = weatherData[1].data.map(obj => new Forecast(obj));
-//             response.status(200).send(formattedData);
-//         } else if (searchQuery === 'Amman') {
-//             const formattedData = weatherData[2].data.map(obj => new Forecast(obj));
-//             response.status(200).send(formattedData);
-//         } else {
-//             response.status(404).send('City not found');
-//         }
-//     } catch (error) {
-//         next(error);
-//     }
-// })
-
 //route for live weather
 app.get('/weather', getLiveWeather);
 
@@ -119,9 +54,9 @@ async function getLiveWeather(req, res, next) {
         // console.log(lat, lon);
         const url = `http://api.weatherbit.io/v2.0/forecast/daily?key=${process.env.WEATHER_API_KEY}&lat=${lat}&lon=${lon}`;
         const weatherResponse = await axios.get(url);
-        console.log(weatherResponse.data.data);
+        // console.log(weatherResponse.data.data);
         const formattedWeatherData = weatherResponse.data.data.map(day => new Forecast(day));
-        console.log(formattedWeatherData);
+        // console.log(formattedWeatherData);
         res.status(200).send(formattedWeatherData);
     }
     catch (error) {
@@ -132,18 +67,15 @@ async function getLiveWeather(req, res, next) {
 //route for live movies
 app.get('/movies', getMovies);
 
-async function getMovies(req, res, next){
-    try{
-        const {searchQuery} = req.query;
-        console.log(searchQuery);
+async function getMovies(req, res, next) {
+    try {
+        const { searchQuery } = req.query;
         const url = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.MOVIE_API_KEY}&query=${searchQuery}`;
-        console.log(url);
         const moviesResponse = await axios.get(url);
-        console.log(moviesResponse.data);
         const formattedMovieData = moviesResponse.data.results.map(movie => new Movie(movie));
         res.status(200).send(formattedMovieData);
     }
-    catch(error){
+    catch (error) {
         next(error)
     }
 }
@@ -159,7 +91,7 @@ class Forecast {
 
 //this class is used to format the movie data
 class Movie {
-    constructor(obj){
+    constructor(obj) {
         this.title = obj.title;
         this.overview = obj.overview;
         this.released = obj.release_date;
