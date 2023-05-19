@@ -12,7 +12,10 @@ const cors = require('cors');
 const axios = require('axios');
 
 //brings in json data
-const weatherData = require('./data/weather.json');
+// const weatherData = require('./data/weather.json');
+
+const getLiveWeather = require('./modules/weather');
+const getMovies = require('./modules/movies');
 
 //initializes express
 const app = express();
@@ -47,56 +50,8 @@ async function getLocation(req, res, next) {
 //route for live weather
 app.get('/weather', getLiveWeather);
 
-async function getLiveWeather(req, res, next) {
-    try {
-        const { lat, lon } = req.query;
-        const url = `http://api.weatherbit.io/v2.0/forecast/daily?key=${process.env.WEATHER_API_KEY}&lat=${lat}&lon=${lon}`;
-        const weatherResponse = await axios.get(url);
-        const formattedWeatherData = weatherResponse.data.data.map(day => new Forecast(day));
-        res.status(200).send(formattedWeatherData);
-    }
-    catch (error) {
-        next(error)
-    }
-}
-
 //route for live movies
 app.get('/movies', getMovies);
-
-async function getMovies(req, res, next) {
-    try {
-        const { searchQuery } = req.query;
-        const url = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.MOVIE_API_KEY}&query=${searchQuery}`;
-        const moviesResponse = await axios.get(url);
-        const formattedMovieData = moviesResponse.data.results.map(movie => new Movie(movie));
-        res.status(200).send(formattedMovieData);
-    }
-    catch (error) {
-        next(error)
-    }
-}
-
-//this class is used for format the weather data
-class Forecast {
-    constructor(obj) {
-        this.date = obj.datetime;
-        this.description = `Low of ${obj.low_temp}, high of ${obj.high_temp} with ${obj.weather.description}`;
-
-    }
-}
-
-//this class is used to format the movie data
-class Movie {
-    constructor(obj) {
-        this.title = obj.title;
-        this.overview = obj.overview;
-        this.average_votes = obj.vote_average;
-        this.total_votes = obj.vote_count;
-        this.image_url = `https://image.tmdb.org/t/p/w500${obj.poster_path}`;
-        this.popularity = obj.popularity;
-        this.released_on = obj.release_date;
-    }
-}
 
 //catch-all route
 app.get('*', (request, response) => {
