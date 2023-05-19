@@ -14,6 +14,8 @@ const axios = require('axios');
 //brings in json data
 const weatherData = require('./data/weather.json');
 
+const getLiveWeather = require('./modules/weather');
+
 //initializes express
 const app = express();
 
@@ -22,6 +24,8 @@ app.use(cors());
 
 //sets up the PORT we want our server to run on. here we assign the env variable from .env file to a variable here in our application
 const port = process.env.PORT;
+
+require
 
 //creates default route which includes the / and callback function. request is from our front-end client and response is from back-end to front-end
 app.get('/', (request, response) => {
@@ -47,19 +51,6 @@ async function getLocation(req, res, next) {
 //route for live weather
 app.get('/weather', getLiveWeather);
 
-async function getLiveWeather(req, res, next) {
-    try {
-        const { lat, lon } = req.query;
-        const url = `http://api.weatherbit.io/v2.0/forecast/daily?key=${process.env.WEATHER_API_KEY}&lat=${lat}&lon=${lon}`;
-        const weatherResponse = await axios.get(url);
-        const formattedWeatherData = weatherResponse.data.data.map(day => new Forecast(day));
-        res.status(200).send(formattedWeatherData);
-    }
-    catch (error) {
-        next(error)
-    }
-}
-
 //route for live movies
 app.get('/movies', getMovies);
 
@@ -76,14 +67,7 @@ async function getMovies(req, res, next) {
     }
 }
 
-//this class is used for format the weather data
-class Forecast {
-    constructor(obj) {
-        this.date = obj.datetime;
-        this.description = `Low of ${obj.low_temp}, high of ${obj.high_temp} with ${obj.weather.description}`;
 
-    }
-}
 
 //this class is used to format the movie data
 class Movie {

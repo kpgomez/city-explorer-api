@@ -24,37 +24,25 @@
 
 ## Time Estimates
 
-Name of feature: Set up your server repository
+Name of feature: Refactor
 
-Estimate of time needed to complete: 30 minutes
+Estimate of time needed to complete: 
 
-Start time: 7:45 p.m.
+Start time: 
 
-Finish time: 8:15 p.m.
+Finish time: 
 
-Actual time needed to complete: 30 minutes
-
-<hr>
-
-Name of feature: Weather(placeholder)
-
-Estimate of time needed to complete: 30 minutes
-
-Start time: 8:15 p.m.
-
-Finish time: to be cont'd
-
-Actual time needed to complete: 5+ hours so far
+Actual time needed to complete:
 
 <hr>
 
-Name of feature: Weather(live)
+Name of feature: Componentize
 
-Estimate of time needed to complete: 6 hours
+Estimate of time needed to complete: 
 
-Start time: 12 a.m.
+Start time: 
 
-Finish time: to be cont'd
+Finish time: 
 
 Actual time needed to complete: 
 
