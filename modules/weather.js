@@ -1,16 +1,8 @@
+'use strict'
+
 const axios = require('axios');
 
 function getLiveWeather(req, res, next) {
-    // try {
-    //     const { lat, lon } = req.query;
-    //     const url = `http://api.weatherbit.io/v2.0/forecast/daily?key=${process.env.WEATHER_API_KEY}&lat=${lat}&lon=${lon}`;
-    //     const weatherResponse = await axios.get(url);
-    //     const formattedWeatherData = weatherResponse.data.data.map(day => new Forecast(day));
-    //     res.status(200).send(formattedWeatherData);
-    // }
-    // catch (error) {
-    //     next(error)
-    // }
     const {lat, lon} = req.query;
     const url = `http://api.weatherbit.io/v2.0/forecast/daily?key=${process.env.WEATHER_API_KEY}&lat=${lat}&lon=${lon}`;
     axios.get(url)

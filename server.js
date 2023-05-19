@@ -12,9 +12,10 @@ const cors = require('cors');
 const axios = require('axios');
 
 //brings in json data
-const weatherData = require('./data/weather.json');
+// const weatherData = require('./data/weather.json');
 
 const getLiveWeather = require('./modules/weather');
+const getMovies = require('./modules/movies');
 
 //initializes express
 const app = express();
@@ -24,8 +25,6 @@ app.use(cors());
 
 //sets up the PORT we want our server to run on. here we assign the env variable from .env file to a variable here in our application
 const port = process.env.PORT;
-
-require
 
 //creates default route which includes the / and callback function. request is from our front-end client and response is from back-end to front-end
 app.get('/', (request, response) => {
@@ -54,18 +53,18 @@ app.get('/weather', getLiveWeather);
 //route for live movies
 app.get('/movies', getMovies);
 
-async function getMovies(req, res, next) {
-    try {
-        const { searchQuery } = req.query;
-        const url = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.MOVIE_API_KEY}&query=${searchQuery}`;
-        const moviesResponse = await axios.get(url);
-        const formattedMovieData = moviesResponse.data.results.map(movie => new Movie(movie));
-        res.status(200).send(formattedMovieData);
-    }
-    catch (error) {
-        next(error)
-    }
-}
+// async function getMovies(req, res, next) {
+//     try {
+//         const { searchQuery } = req.query;
+//         const url = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.MOVIE_API_KEY}&query=${searchQuery}`;
+//         const moviesResponse = await axios.get(url);
+//         const formattedMovieData = moviesResponse.data.results.map(movie => new Movie(movie));
+//         res.status(200).send(formattedMovieData);
+//     }
+//     catch (error) {
+//         next(error)
+//     }
+// }
 
 
 
