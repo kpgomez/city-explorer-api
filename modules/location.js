@@ -14,7 +14,7 @@ function getLocation(req, res, next) {
     console.log(cache);
 
     //checking if cache with key exists
-    if (cache[key] && (Date.now() - cache[key].timestamp < 30000)) {
+    if (cache[key] && (Date.now() - cache[key].timestamp < 900000)) {
         console.log('cache hit - sending data from cache');
         res.status(200).send(cache[key].data)
     } else {
