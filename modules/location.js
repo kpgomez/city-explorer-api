@@ -11,8 +11,10 @@ function getLocation(req, res, next) {
     //unique identifier for the cache
     const key = 'location' + searchQuery;
 
+    console.log(cache);
+
     //checking if cache with key exists
-    if (cache[key]) {
+    if (cache[key] && (Date.now() - cache[key].timestamp < 30000)) {
         console.log('cache hit - sending data from cache');
         res.status(200).send(cache[key].data)
     } else {
@@ -22,6 +24,7 @@ function getLocation(req, res, next) {
             .then(response => {
                 cache[key] = {};
                 cache[key].data = response.data[0];
+                cache[key].timestamp = Date.now();
                 res.status(200).send(response.data[0]) //help from instructor
                 console.log(cache[key].data)
             })
