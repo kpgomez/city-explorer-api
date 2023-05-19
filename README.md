@@ -30,8 +30,8 @@ Estimate of time needed to complete: 1 hour
 
 Start time: 11:15 p.m.
 
-Finish time: 
+Finish time: 12:25 p.m.
 
-Actual time needed to complete: 
+Actual time needed to complete: 1 hour and 10 minutes 
 
 <hr>
