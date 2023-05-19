@@ -11,11 +11,9 @@ const cors = require('cors');
 
 const axios = require('axios');
 
-//brings in json data
-// const weatherData = require('./data/weather.json');
-
 const getLiveWeather = require('./modules/weather');
 const getMovies = require('./modules/movies');
+const getLocation = require('./modules/location');
 
 //initializes express
 const app = express();
@@ -34,19 +32,6 @@ app.get('/', (request, response) => {
 //route for locationIQ
 app.get('/search', getLocation)
 
-//because locationiq was moved to backend
-async function getLocation(req, res, next) {
-    try {
-        const { searchQuery } = req.query;
-        const url = `https://us1.locationiq.com/v1/search.php?key=${process.env.LOCATIONIQ_KEY}&q=${searchQuery}&format=json`;
-        let config = { headers: { Referer: process.env.SERVER_URL } }; //got help from Roger
-        const locationResponse = await axios.get(url, config); //help from instructor
-        res.send(locationResponse.data);
-    }
-    catch (error) {
-        next(error);
-    }
-}
 //route for live weather
 app.get('/weather', getLiveWeather);
 
@@ -65,6 +50,3 @@ app.use((error, request, response, next) => {
 
 //tells the app which port to listen on
 app.listen(port, () => console.log(`listening on ${port}`));
-
-//next test thunderclient next http://localhost:3001/ look for message on ln 26
-// const city = weatherData.find(city => city.city_name === searchQuery)

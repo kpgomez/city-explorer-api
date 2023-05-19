@@ -26,28 +26,12 @@
 
 Name of feature: Refactor
 
-Estimate of time needed to complete: 
+Estimate of time needed to complete: 1 hour
 
-Start time: 
+Start time: 7:15 p.m.
 
-Finish time: 
+Finish time: 8:30 p.m.
 
-Actual time needed to complete:
-
-<hr>
-
-Name of feature: Componentize
-
-Estimate of time needed to complete: 
-
-Start time: 
-
-Finish time: 
-
-Actual time needed to complete: 
+Actual time needed to complete: 1 hour and 15 minutes
 
 <hr>
-
-## Dataflow
-
-![dataflow](Screenshot%202023-05-07%20at%201.22.40%20AM.png)
