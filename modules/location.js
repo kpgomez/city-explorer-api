@@ -25,7 +25,7 @@ function getLocation(req, res, next) {
                 cache[key] = {};
                 cache[key].data = response.data[0];
                 cache[key].timestamp = Date.now();
-                res.status(200).send(response.data[0]) //help from instructor
+                res.status(200).send(response.data) //help from instructor
                 console.log(cache[key].data)
             })
             .catch(error => next(error));
