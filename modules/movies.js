@@ -14,7 +14,7 @@ function getMovies(req, res, next) {
 
     if (cache[key] && (Date.now() - cache[key].timestamp < 2629800000)) {
         console.log('cache hit - sending data from cache');
-        res.status(200).send(cache[key].data)
+        res.status(200).send(cache[key].data);
     } else {
         console.log('cache miss - making a new request to the API');
         axios.get(url)
